@@ -1,9 +1,10 @@
 ---
 interface Props {
     name: string;
+    id: string;
 }
 
-const { name } = Astro.props;
+const { name, id } = Astro.props;
 ---
 
-<button class="border-2 border-black rounded-md px-1 py-1">{name}</button>
+<button id={id} class="border-2 border-black rounded-md px-1 py-1">{name}</button>

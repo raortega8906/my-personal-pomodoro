@@ -41,12 +41,16 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
     const descansoCorto = document.getElementById('descanso-corto');
     const descansoLargo = document.getElementById('descanso-largo');
 
-    const timer = document.getElementById('timer');
-    const pomodoros = document.getElementById('pomodoros-count');
-
     const pomodoroButtonsControl = document.getElementById('pomodoro-buttons-control');
     const sButtonsControl = document.getElementById('s-buttons-control');
     const lButtonsControl = document.getElementById('l-buttons-control');
+
+    const iniciar = document.getElementById('iniciar');
+    const resetear = document.getElementById('resetear');
+    const parar = document.getElementById('parar');
+
+    const timer = document.getElementById('timer');
+    const pomodoros = document.getElementById('pomodoros-count');
 
     const audio = new Audio('/assets/media/ma-meilleure-ennemie.mp3');
 
@@ -64,21 +68,32 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
             // Añadir clase active al botón
             pomodoro.classList.add('active');
 
-            audio.play().catch(error => {
-                console.error('Error al reproducir:', error);
-            });
-
-            // Reproducir siempre el audio
-            audio.addEventListener('ended', () => {
-                audio.currentTime = 0;
-                audio.play();
-            });
-
             // Mostrar los botones de control
             if(pomodoroButtonsControl && sButtonsControl && lButtonsControl){
                 pomodoroButtonsControl.style.display = 'flex';
                 sButtonsControl.style.display = 'none';
                 lButtonsControl.style.display = 'none';
+
+                if(iniciar && resetear && parar){
+                    iniciar.addEventListener('click', () => {
+                        audio.play();
+                    });
+
+                    resetear.addEventListener('click', () => {
+                        audio.currentTime = 0;
+                        audio.play();    
+                    });
+
+                    parar.addEventListener('click', () => {
+                        audio.pause();
+                    });
+
+                    // Reproducir siempre el audio
+                    audio.addEventListener('ended', () => {
+                        audio.currentTime = 0
+                        audio.play();
+                    });
+                }
             }
 
             if(timer && pomodoros){
