@@ -48,9 +48,15 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
     const sButtonsControl = document.getElementById('s-buttons-control');
     const lButtonsControl = document.getElementById('l-buttons-control');
 
+    const audio = new Audio('/assets/media/ma-meilleure-ennemie.mp3');
+
     // Eventos
     if(pomodoro){
         pomodoro.addEventListener('click', () => {
+
+            audio.play().catch(error => {
+                console.error('Error al reproducir:', error);
+            });
 
             // Mostrar los botones de control
             if(pomodoroButtonsControl && sButtonsControl && lButtonsControl){
@@ -64,7 +70,7 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
                 timer.innerHTML = timer.innerHTML.replace('25:00', '25:01');
 
                 // Incrementar el valor de pomodoros
-                pomodoros.innerHTML = parseInt(pomodoros.innerHTML) + 1;
+                pomodoros.innerHTML = `${parseInt(pomodoros.innerHTML) + 1}`;
             }
             
         });
@@ -84,7 +90,7 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
                 timer.innerHTML = timer.innerHTML.replace('25:00', '25:05');
 
                 // Incrementar el valor de pomodoros
-                pomodoros.innerHTML = parseInt(pomodoros.innerHTML) + 1;
+                pomodoros.innerHTML = '0';
             }
         });
     }
@@ -103,7 +109,7 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
                 timer.innerHTML = timer.innerHTML.replace('25:00', '25:10');
 
                 // Incrementar el valor de pomodoros
-                pomodoros.innerHTML = parseInt(pomodoros.innerHTML) + 1;
+                pomodoros.innerHTML = '0';
             }
         });
     }
