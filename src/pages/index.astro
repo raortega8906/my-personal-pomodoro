@@ -12,7 +12,7 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
         </h1>
         
         <!-- Botones Pomodoro, Descanso Corto y Descanso Largo -->
-        <div class="flex flex-row items-center gap-x-2 justify-center py-1 px-1 border-2 border-gray-900 rounded-md">
+        <div class="flex flex-row items-center gap-x-0 justify-center py-1 px-1 border-2 border-gray-900 rounded-md">
             <ButtonTimer id='pomodoro' name="Pomodoro" />
             <ButtonTimer id='descanso-corto' name="Descanso Corto" />
             <ButtonTimer id='descanso-largo' name="Descanso Largo" />
@@ -51,11 +51,27 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
     const audio = new Audio('/assets/media/ma-meilleure-ennemie.mp3');
 
     // Eventos
-    if(pomodoro){
+    if(pomodoro && descansoCorto && descansoLargo){
+        pomodoro.classList.add('active');
+        descansoCorto.classList.remove('active');
+        descansoLargo.classList.remove('active');   
+
         pomodoro.addEventListener('click', () => {
+            pomodoro.classList.add('active');
+            descansoCorto.classList.remove('active');
+            descansoLargo.classList.remove('active');  
+
+            // Añadir clase active al botón
+            pomodoro.classList.add('active');
 
             audio.play().catch(error => {
                 console.error('Error al reproducir:', error);
+            });
+
+            // Reproducir siempre el audio
+            audio.addEventListener('ended', () => {
+                audio.currentTime = 0;
+                audio.play();
             });
 
             // Mostrar los botones de control
@@ -67,17 +83,19 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
 
             if(timer && pomodoros){
                 // Incrementar el valor del timer
-                timer.innerHTML = timer.innerHTML.replace('25:00', '25:01');
+                timer.innerHTML = '25:00'; 
 
                 // Incrementar el valor de pomodoros
                 pomodoros.innerHTML = `${parseInt(pomodoros.innerHTML) + 1}`;
             }
             
         });
-    }
 
-    if(descansoCorto){
         descansoCorto.addEventListener('click', () => {
+            descansoCorto.classList.add('active');
+            pomodoro.classList.remove('active');
+            descansoLargo.classList.remove('active');  
+            audio.pause();
 
             if(pomodoroButtonsControl && sButtonsControl && lButtonsControl){
                 pomodoroButtonsControl.style.display = 'none';
@@ -86,17 +104,15 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
             }
 
             if(timer && pomodoros){
-                // Incrementar el valor del timer
-                timer.innerHTML = timer.innerHTML.replace('25:00', '25:05');
-
-                // Incrementar el valor de pomodoros
-                pomodoros.innerHTML = '0';
+                timer.innerHTML = '05:00';
             }
         });
-    }
 
-    if(descansoLargo){
         descansoLargo.addEventListener('click', () => {
+            descansoLargo.classList.add('active');
+            pomodoro.classList.remove('active');
+            descansoCorto.classList.remove('active'); 
+            audio.pause();
 
             if(pomodoroButtonsControl && sButtonsControl && lButtonsControl){
                 pomodoroButtonsControl.style.display = 'none';
@@ -105,11 +121,7 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
             }
 
             if(timer && pomodoros){
-                // Incrementar el valor del timer
-                timer.innerHTML = timer.innerHTML.replace('25:00', '25:10');
-
-                // Incrementar el valor de pomodoros
-                pomodoros.innerHTML = '0';
+                timer.innerHTML = '15:00';
             }
         });
     }
