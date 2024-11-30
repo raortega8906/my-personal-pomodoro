@@ -49,10 +49,12 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
     const resetear = document.getElementById('resetear');
     const parar = document.getElementById('parar');
 
-    const timer = document.getElementById('timer');
-    const pomodoros = document.getElementById('pomodoros-count');
-
+    const pomodorosCount = document.getElementById('pomodoros-count');
     const audio = new Audio('/assets/media/ma-meilleure-ennemie.mp3');
+
+    let timer = document.getElementById('timer');
+    let intervalId = null;
+    let pomodoros = 0;
 
     // Eventos
     if(pomodoro && descansoCorto && descansoLargo){
@@ -75,18 +77,45 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
         });
     }
 
+    // Función para convertir minutos y segundos a un formato mm:ss
+    function formatTime(minutes, seconds) {
+        return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+
+    // Función para iniciar el temporizador
+    function startTimer(duration) {
+        let remainingTime = duration; // Tiempo en segundos (25 minutos = 1500 segundos)
+        let valueInit = timer.textContent; // Obtenemos el valor inicial del temporizador
+
+        intervalId = setInterval(() => {
+            // Calculamos minutos y segundos restantes
+            const minutes = Math.floor(remainingTime / 60);
+            const seconds = remainingTime % 60;
+
+            // Actualizamos el texto del temporizador
+            timer.textContent = formatTime(minutes, seconds);
+
+            if (remainingTime === 0) {
+                clearInterval(intervalId);
+                timer = valueInit; // Reiniciamos el temporizador
+                pomodoros++; // Sumamos un pomodoro
+                console.log(`¡Pomodoro completado! Total: ${pomodoros}`);
+                // Puedes reproducir un sonido o hacer algo adicional aquí
+            } else {
+                remainingTime--; // Reducimos el tiempo restante
+            }
+        }, 1000); // Se ejecuta cada segundo
+    }
+
     function startTimerPomodoro() {
         if(pomodoro && descansoCorto && descansoLargo){
             pomodoro.classList.add('active');
             descansoCorto.classList.remove('active');
             descansoLargo.classList.remove('active');  
 
-            if(timer && pomodoros){
+            if(timer && pomodorosCount){
                 // Setear el valor del timer
                 timer.innerHTML = '25:00'; 
-
-                // Incrementar el valor de pomodoros
-                // pomodoros.innerHTML = `${parseInt(pomodoros.innerHTML) + 1}`;
             }
 
             // Mostrar los botones de control
@@ -98,17 +127,29 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
                 if(iniciar && resetear && parar ){
                     iniciar.addEventListener('click', () => {
                         audio.play();
-                        let intervalId = null;
-                        let pomodoros = 0;
+
+                        if (intervalId) {
+                            clearInterval(intervalId); // Reiniciamos si ya había un temporizador corriendo
+                        }
+                        startTimer(25 * 60); // Iniciamos con 25 minutos
                     });
 
                     resetear.addEventListener('click', () => {
                         audio.currentTime = 0;
                         audio.play();    
+
+                        if (intervalId) {
+                            clearInterval(intervalId); // Reiniciamos si ya había un temporizador corriendo
+                        }
+                        startTimer(25 * 60); // Iniciamos con 25 minutos
                     });
 
                     parar.addEventListener('click', () => {
                         audio.pause();
+
+                        if (intervalId) {
+                            clearInterval(intervalId); // Reiniciamos si ya había un temporizador corriendo
+                        }
                     });
 
                     // Reproducir siempre el audio
@@ -129,7 +170,7 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
             audio.pause();
             audio.currentTime = 0
 
-            if(timer && pomodoros){
+            if(timer && pomodorosCount){
                 timer.innerHTML = '05:00';
             }
 
@@ -149,7 +190,7 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
             audio.pause();
             audio.currentTime = 0
 
-            if(timer && pomodoros){
+            if(timer && pomodorosCount){
                 timer.innerHTML = '15:00';
             }
 
