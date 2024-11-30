@@ -58,15 +58,36 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
     if(pomodoro && descansoCorto && descansoLargo){
         pomodoro.classList.add('active');
         descansoCorto.classList.remove('active');
-        descansoLargo.classList.remove('active');   
+        descansoLargo.classList.remove('active'); 
+
+        startTimerPomodoro();
 
         pomodoro.addEventListener('click', () => {
+            startTimerPomodoro();
+        });
+
+        descansoCorto.addEventListener('click', () => {
+            startTimerDescansoCorto();
+        });
+
+        descansoLargo.addEventListener('click', () => {
+            startTimerDescansoLargo();
+        });
+    }
+
+    function startTimerPomodoro() {
+        if(pomodoro && descansoCorto && descansoLargo){
             pomodoro.classList.add('active');
             descansoCorto.classList.remove('active');
             descansoLargo.classList.remove('active');  
 
-            // Añadir clase active al botón
-            pomodoro.classList.add('active');
+            if(timer && pomodoros){
+                // Setear el valor del timer
+                timer.innerHTML = '25:00'; 
+
+                // Incrementar el valor de pomodoros
+                // pomodoros.innerHTML = `${parseInt(pomodoros.innerHTML) + 1}`;
+            }
 
             // Mostrar los botones de control
             if(pomodoroButtonsControl && sButtonsControl && lButtonsControl){
@@ -74,9 +95,11 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
                 sButtonsControl.style.display = 'none';
                 lButtonsControl.style.display = 'none';
 
-                if(iniciar && resetear && parar){
+                if(iniciar && resetear && parar ){
                     iniciar.addEventListener('click', () => {
                         audio.play();
+                        let intervalId = null;
+                        let pomodoros = 0;
                     });
 
                     resetear.addEventListener('click', () => {
@@ -95,50 +118,47 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
                     });
                 }
             }
+        }
+    }
 
-            if(timer && pomodoros){
-                // Incrementar el valor del timer
-                timer.innerHTML = '25:00'; 
-
-                // Incrementar el valor de pomodoros
-                pomodoros.innerHTML = `${parseInt(pomodoros.innerHTML) + 1}`;
-            }
-            
-        });
-
-        descansoCorto.addEventListener('click', () => {
+    function startTimerDescansoCorto() {
+        if(pomodoro && descansoCorto && descansoLargo){
             descansoCorto.classList.add('active');
             pomodoro.classList.remove('active');
             descansoLargo.classList.remove('active');  
             audio.pause();
+            audio.currentTime = 0
+
+            if(timer && pomodoros){
+                timer.innerHTML = '05:00';
+            }
 
             if(pomodoroButtonsControl && sButtonsControl && lButtonsControl){
                 pomodoroButtonsControl.style.display = 'none';
                 sButtonsControl.style.display = 'flex';
                 lButtonsControl.style.display = 'none';
             }
+        }
+    }
 
-            if(timer && pomodoros){
-                timer.innerHTML = '05:00';
-            }
-        });
-
-        descansoLargo.addEventListener('click', () => {
+    function startTimerDescansoLargo() {
+        if(pomodoro && descansoCorto && descansoLargo){
             descansoLargo.classList.add('active');
             pomodoro.classList.remove('active');
             descansoCorto.classList.remove('active'); 
             audio.pause();
+            audio.currentTime = 0
+
+            if(timer && pomodoros){
+                timer.innerHTML = '15:00';
+            }
 
             if(pomodoroButtonsControl && sButtonsControl && lButtonsControl){
                 pomodoroButtonsControl.style.display = 'none';
                 sButtonsControl.style.display = 'none';
                 lButtonsControl.style.display = 'flex';
-            }
-
-            if(timer && pomodoros){
-                timer.innerHTML = '15:00';
-            }
-        });
+            }   
+        }
     }
 
 </script>
