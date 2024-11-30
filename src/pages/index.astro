@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import PomodoroIcon from '../components/icons/PomodoroIcon.astro';
 import ButtonTimer from '../components/ButtonTimer.astro';
-import ButtonControl from '../components/ButtonControl.astro';
+import ContentButtonsControl from '../components/ContentButtonsControl.astro';
 ---
 
 <Layout>
@@ -13,26 +13,99 @@ import ButtonControl from '../components/ButtonControl.astro';
         
         <!-- Botones Pomodoro, Descanso Corto y Descanso Largo -->
         <div class="flex flex-row items-center gap-x-2 justify-center py-1 px-1 border-2 border-gray-900 rounded-md">
-            <ButtonTimer name="Pomodoro" />
-            <ButtonTimer name="Descanso Corto" />
-            <ButtonTimer name="Descanso Largo" />
+            <ButtonTimer id='pomodoro' name="Pomodoro" />
+            <ButtonTimer id='descanso-corto' name="Descanso Corto" />
+            <ButtonTimer id='descanso-largo' name="Descanso Largo" />
         </div>
 
         <!-- Timer comenzando en 25:00 y terminando en 00:00 -->
-         <span class="text-8xl text-center text-black">25:00</span>
+        <span id="timer" class="text-8xl text-center text-black">25:00</span>
 
         <!-- Botones para iniciar y parar el timer -->
-        <div class="flex flex-row items-center justify-center gap-x-6 py-1 px-1">
-            <ButtonControl name="Iniciar" />
-            <ButtonControl name="Resetear" />
-            <ButtonControl name="Parar" />
-        </div>
+        <ContentButtonsControl id="pomodoro-buttons-control" />
+        <ContentButtonsControl id="s-buttons-control" />
+        <ContentButtonsControl id="l-buttons-control" />
 
         <!-- Texto con la cantidad de pomodoros completados -->
         <span class="flex items-center justify-center gap-x-2 text-lg text-center text-black">
             <!-- Icono de tomate para el pomodoro con color rojo-->
             <PomodoroIcon />
-            <span>Pomodoros Completados: 0</span>
+            <span id="pomodoros">Pomodoros completados: <span id="pomodoros-count">0</span></span>
         </span>
     </section>
 </Layout>
+
+<script>
+    // Recogida de los elementos
+    const pomodoro = document.getElementById('pomodoro');
+    const descansoCorto = document.getElementById('descanso-corto');
+    const descansoLargo = document.getElementById('descanso-largo');
+
+    const timer = document.getElementById('timer');
+    const pomodoros = document.getElementById('pomodoros-count');
+
+    const pomodoroButtonsControl = document.getElementById('pomodoro-buttons-control');
+    const sButtonsControl = document.getElementById('s-buttons-control');
+    const lButtonsControl = document.getElementById('l-buttons-control');
+
+    // Eventos
+    if(pomodoro){
+        pomodoro.addEventListener('click', () => {
+
+            // Mostrar los botones de control
+            if(pomodoroButtonsControl && sButtonsControl && lButtonsControl){
+                pomodoroButtonsControl.style.display = 'flex';
+                sButtonsControl.style.display = 'none';
+                lButtonsControl.style.display = 'none';
+            }
+
+            if(timer && pomodoros){
+                // Incrementar el valor del timer
+                timer.innerHTML = timer.innerHTML.replace('25:00', '25:01');
+
+                // Incrementar el valor de pomodoros
+                pomodoros.innerHTML = parseInt(pomodoros.innerHTML) + 1;
+            }
+            
+        });
+    }
+
+    if(descansoCorto){
+        descansoCorto.addEventListener('click', () => {
+
+            if(pomodoroButtonsControl && sButtonsControl && lButtonsControl){
+                pomodoroButtonsControl.style.display = 'none';
+                sButtonsControl.style.display = 'flex';
+                lButtonsControl.style.display = 'none';
+            }
+
+            if(timer && pomodoros){
+                // Incrementar el valor del timer
+                timer.innerHTML = timer.innerHTML.replace('25:00', '25:05');
+
+                // Incrementar el valor de pomodoros
+                pomodoros.innerHTML = parseInt(pomodoros.innerHTML) + 1;
+            }
+        });
+    }
+
+    if(descansoLargo){
+        descansoLargo.addEventListener('click', () => {
+
+            if(pomodoroButtonsControl && sButtonsControl && lButtonsControl){
+                pomodoroButtonsControl.style.display = 'none';
+                sButtonsControl.style.display = 'none';
+                lButtonsControl.style.display = 'flex';
+            }
+
+            if(timer && pomodoros){
+                // Incrementar el valor del timer
+                timer.innerHTML = timer.innerHTML.replace('25:00', '25:10');
+
+                // Incrementar el valor de pomodoros
+                pomodoros.innerHTML = parseInt(pomodoros.innerHTML) + 1;
+            }
+        });
+    }
+
+</script>

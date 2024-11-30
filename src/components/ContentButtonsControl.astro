@@ -1,0 +1,16 @@
+
+---
+import ButtonControl from '../components/ButtonControl.astro';
+
+interface Props {
+    id: string;
+}
+
+const { id } = Astro.props;
+---
+
+<div id={id} class="flex flex-row items-center justify-center gap-x-6 py-1 px-1">
+    <ButtonControl name="Iniciar" />
+    <ButtonControl name="Resetear" />
+    <ButtonControl name="Parar" />
+</div>
