@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Pomodoro Timer</title>
+	</head>
+	
+	<body>
+		<div class="absolute h-full w-full bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
+		<slot />
+	</body>
+</html>
+
+<style is:global>
+	html,
+	body {
+		display: flex;
+		justify-content: center; /* Centra horizontalmente */
+		align-items: center;    /* Centra verticalmente */
+		margin: 0;
+		width: 100%;
+		height: 100vh; /* Ocupa toda la altura de la pantalla */
+		background-color: #f3f4f6; /* Opcional, para que destaque */
+	}
+</style>
