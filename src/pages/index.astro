@@ -1,5 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import PomodoroIcon from '../components/icons/PomodoroIcon.astro';
+import ButtonTimer from '../components/ButtonTimer.astro';
+import ButtonControl from '../components/ButtonControl.astro';
 ---
 
 <Layout>
@@ -10,9 +13,9 @@ import Layout from '../layouts/Layout.astro';
         
         <!-- Botones Pomodoro, Descanso Corto y Descanso Largo -->
         <div class="flex flex-row items-center gap-x-2 justify-center py-1 px-1 border-2 border-gray-900 rounded-md">
-            <button class="border-2 border-black rounded-md px-1 py-1">Pomodoro</button>
-            <button class="border-2 border-black rounded-md px-1 py-1">Descanso Corto</button>
-            <button class="border-2 border-black rounded-md px-1 py-1">Descanso Largo</button>
+            <ButtonTimer name="Pomodoro" />
+            <ButtonTimer name="Descanso Corto" />
+            <ButtonTimer name="Descanso Largo" />
         </div>
 
         <!-- Timer comenzando en 25:00 y terminando en 00:00 -->
@@ -20,18 +23,15 @@ import Layout from '../layouts/Layout.astro';
 
         <!-- Botones para iniciar y parar el timer -->
         <div class="flex flex-row items-center justify-center gap-x-6 py-1 px-1">
-            <button class="border-2 border-black rounded-md px-1 py-1">Iniciar</button>
-            <button class="border-2 border-black rounded-md px-1 py-1">Resetear</button>
-            <button class="border-2 border-black rounded-md px-1 py-1">Parar</button>
+            <ButtonControl name="Iniciar" />
+            <ButtonControl name="Resetear" />
+            <ButtonControl name="Parar" />
         </div>
 
         <!-- Texto con la cantidad de pomodoros completados -->
         <span class="flex items-center justify-center gap-x-2 text-lg text-center text-black">
             <!-- Icono de tomate para el pomodoro con color rojo-->
-             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="red" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 11.253l3.23-3.232a6.751 6.751 0 011.486.948, 6.751 6.751 0 01-1.486.948L12 13.753 9.515 11.232a6.751 6.751 0 010-8.486c.015-.212.03-.425.04-.639z" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+            <PomodoroIcon />
             <span>Pomodoros Completados: 0</span>
         </span>
     </section>
