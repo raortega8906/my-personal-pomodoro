@@ -6,13 +6,23 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
 ---
 
 <Layout>
-    <!-- <div class="absolute h-full w-full bg-[radial-gradient(#0505_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div> -->
-    <section class="flex flex-col items-center justify-center gap-y-4 text-center my-8 w-[600px] rounded-[10px] bg-white p-4 shadow-lg z-10">
+    <section class="relative flex flex-col items-center justify-center gap-y-4 text-center my-8 w-[600px] rounded-[10px] bg-white p-4 shadow-lg z-10">
         <div class="absolute h-full w-full bg-[radial-gradient(#e5e7eb_1px,transparent_0px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
-        <h1 class="flex items-center justify-center gap-x-2 text-lg text-center text-black z-10">
-            <span>Mi Pomodoro personal</span>
-        </h1>
         
+        <h1 class="flex items-center justify-center gap-x-2 text-lg text-center text-black z-10">
+            <span>Mi Pomodoro personal</span><br>
+            <div id="audio-icons" class="absolute top-4 right-4 text-lg text-black">
+                <svg id="audio-on" xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-volume-up-fill" viewBox="0 0 16 16">
+                    <path d="M11.536 14.01A8.47 8.47 0 0 0 14.026 8a8.47 8.47 0 0 0-2.49-6.01l-.708.707A7.48 7.48 0 0 1 13.025 8c0 2.071-.84 3.946-2.197 5.303z"/>
+                    <path d="M10.121 12.596A6.48 6.48 0 0 0 12.025 8a6.48 6.48 0 0 0-1.904-4.596l-.707.707A5.48 5.48 0 0 1 11.025 8a5.48 5.48 0 0 1-1.61 3.89z"/>
+                    <path d="M8.707 11.182A4.5 4.5 0 0 0 10.025 8a4.5 4.5 0 0 0-1.318-3.182L8 5.525A3.5 3.5 0 0 1 9.025 8 3.5 3.5 0 0 1 8 10.475zM6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06"/>
+                </svg>
+                <svg id="audio-off" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-volume-mute" viewBox="0 0 16 16">
+                    <path d="M6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06M6 5.04 4.312 6.39A.5.5 0 0 1 4 6.5H2v3h2a.5.5 0 0 1 .312.11L6 10.96zm7.854.606a.5.5 0 0 1 0 .708L12.207 8l1.647 1.646a.5.5 0 0 1-.708.708L11.5 8.707l-1.646 1.647a.5.5 0 0 1-.708-.708L10.793 8 9.146 6.354a.5.5 0 1 1 .708-.708L11.5 7.293l1.646-1.647a.5.5 0 0 1 .708 0"/>
+                </svg>
+            </div>    
+        </h1>
+
         <!-- Botones Pomodoro, Descanso Corto y Descanso Largo -->
         <div class="flex flex-row items-center gap-x-0 justify-center py-1 px-1 border-2 border-gray-900 rounded-md z-10">
             <ButtonTimer id='pomodoro' name="Pomodoro" />
@@ -66,6 +76,23 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
     let intervalId: number | null = null;
     let pomodoros = 0;
 
+    const audionOn = document.getElementById('audio-on') as HTMLElement | null;
+    const audionOff = document.getElementById('audio-off') as HTMLElement | null;
+
+    if (audionOn && audionOff) {
+        audionOn.addEventListener('click', () => {
+            audio.volume = 1;
+            audionOn.style.display = 'none';
+            audionOff.style.display = 'flex';
+        });
+
+        audionOff.addEventListener('click', () => {
+            audio.volume = 0;
+            audionOff.style.display = 'none';
+            audionOn.style.display = 'flex';
+        });
+    }
+
     // Eventos
     if (pomodoro && descansoCorto && descansoLargo && videoBackground) {
         pomodoro.classList.add('active');
@@ -79,13 +106,18 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
         });
 
         descansoCorto.addEventListener('click', () => {
-            videoBackground.style.display = 'none';
-            startTimerDescansoCorto();
+            alert('Descanso corto no disponible');
+            // Activar funcionalidad cuando se programe este modulo
+            // videoBackground.style.display = 'none';
+            // startTimerDescansoCorto();
         });
 
+
         descansoLargo.addEventListener('click', () => {
-            videoBackground.style.display = 'none';
-            startTimerDescansoLargo();
+            alert('Descanso largo no disponible');
+            // Activar funcionalidad cuando se programe este modulo
+            // videoBackground.style.display = 'none';
+            // startTimerDescansoLargo();
         });
     }
 
