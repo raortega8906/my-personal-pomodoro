@@ -55,6 +55,10 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
     const pomodorosCount = document.getElementById('pomodoros-count') as HTMLElement | null;
 
     const audio = new Audio('/assets/media/ma-meilleure-ennemie.mp3');
+    const audioPomodoro = new Audio('/assets/media/final-pomodoro.mp3');
+    const audioDescansoCorto = new Audio('/assets/media/descanso-corto.mp3');
+    const audioDescansoLargo = new Audio('/assets/media/descanso-largo.mp3');
+
     const videoBackground = document.getElementsByClassName('video-background')[0] as HTMLElement | null;
     const video = document.getElementById('video') as HTMLVideoElement | null;
     const timer = document.getElementById('timer') as HTMLElement | null;
@@ -63,7 +67,7 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
     let pomodoros = 0;
 
     // Eventos
-    if (pomodoro && descansoCorto && descansoLargo) {
+    if (pomodoro && descansoCorto && descansoLargo && videoBackground) {
         pomodoro.classList.add('active');
         descansoCorto.classList.remove('active');
         descansoLargo.classList.remove('active');
@@ -75,10 +79,12 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
         });
 
         descansoCorto.addEventListener('click', () => {
+            videoBackground.style.display = 'none';
             startTimerDescansoCorto();
         });
 
         descansoLargo.addEventListener('click', () => {
+            videoBackground.style.display = 'none';
             startTimerDescansoLargo();
         });
     }
@@ -91,7 +97,7 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
     // Función para iniciar el temporizador
     function startTimer(duration: number): void {
         let remainingTime = duration; // Tiempo en segundos (25 minutos = 1500 segundos)
-        const valueInit = timer?.textContent || '25:00'; // Obtenemos el valor inicial del temporizador
+        const valueInit = timer?.textContent || null; // Obtenemos el valor inicial del temporizador
 
         intervalId = window.setInterval(() => {
             // Calculamos minutos y segundos restantes
@@ -103,7 +109,7 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
                 timer.textContent = formatTime(minutes, seconds);
             }
 
-            if (remainingTime === 0) {
+            if (remainingTime === 0 && pomodorosCount && video && pomodoroButtonsControl) {
                 if (intervalId !== null) {
                     clearInterval(intervalId);
                     intervalId = null; // Reiniciamos el intervalo
@@ -111,9 +117,19 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
                 if (timer) {
                     timer.textContent = valueInit; // Reiniciamos el temporizador
                 }
+                if (pomodoroButtonsControl.style.display === 'flex' && timer){
+                    timer.textContent = '25:00';
+                }
                 pomodoros++; // Sumamos un pomodoro
                 console.log(`¡Pomodoro completado! Total: ${pomodoros}`);
+                pomodorosCount.textContent = String(pomodoros);
                 // Puedes reproducir un sonido o hacer algo adicional aquí
+                audio.pause();
+                audio.currentTime = 0;
+                video.pause();
+                video.currentTime = 0;
+                audioPomodoro.play();
+                
             } else {
                 remainingTime--; // Reducimos el tiempo restante
             }
@@ -136,7 +152,7 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
                 sButtonsControl.style.display = 'none';
                 lButtonsControl.style.display = 'none';
 
-                if (iniciar && resetear && parar && videoBackground && video) {
+                if (iniciar && resetear && parar && videoBackground && video && timer) {
                     iniciar.addEventListener('click', () => {
                         videoBackground.style.display = 'block';
                         video.play();
@@ -145,7 +161,12 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
                         if (intervalId !== null) {
                             clearInterval(intervalId); // Reiniciamos si ya había un temporizador corriendo
                         }
-                        startTimer(25 * 60); // Iniciamos con 25 minutos
+                        const timeString = timer?.textContent || '25:00';
+
+                        const [minutes, seconds] = timeString.split(":").map(Number);
+                        console.log(minutes, seconds);
+                        // startTimer(0.1 * 60);
+                        startTimer(minutes * 60 + seconds);
                     });
 
                     resetear.addEventListener('click', () => {
@@ -157,12 +178,13 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
                         if (intervalId !== null) {
                             clearInterval(intervalId); // Reiniciamos si ya había un temporizador corriendo
                         }
-                        startTimer(25 * 60); // Iniciamos con 25 minutos
+                        startTimer(25 * 60);
                     });
 
                     parar.addEventListener('click', () => {
                         video.pause();
                         audio.pause();
+                        timer.textContent = timer.textContent;
 
                         if (intervalId !== null) {
                             clearInterval(intervalId); // Detenemos el temporizador
