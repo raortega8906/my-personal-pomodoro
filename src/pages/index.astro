@@ -6,20 +6,22 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
 ---
 
 <Layout>
-    <section class="flex flex-col items-center justify-center gap-y-4 text-center my-8 w-[600px] rounded-[10px] bg-white/10 p-4 shadow-lg z-10">
-        <h1 class="flex items-center justify-center gap-x-2 text-lg text-center text-black">
+    <!-- <div class="absolute h-full w-full bg-[radial-gradient(#0505_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div> -->
+    <section class="flex flex-col items-center justify-center gap-y-4 text-center my-8 w-[600px] rounded-[10px] bg-white p-4 shadow-lg z-10">
+        <div class="absolute h-full w-full bg-[radial-gradient(#e5e7eb_1px,transparent_0px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
+        <h1 class="flex items-center justify-center gap-x-2 text-lg text-center text-black z-10">
             <span>Mi Pomodoro personal</span>
         </h1>
         
         <!-- Botones Pomodoro, Descanso Corto y Descanso Largo -->
-        <div class="flex flex-row items-center gap-x-0 justify-center py-1 px-1 border-2 border-gray-900 rounded-md">
+        <div class="flex flex-row items-center gap-x-0 justify-center py-1 px-1 border-2 border-gray-900 rounded-md z-10">
             <ButtonTimer id='pomodoro' name="Pomodoro" />
             <ButtonTimer id='descanso-corto' name="Descanso Corto" />
             <ButtonTimer id='descanso-largo' name="Descanso Largo" />
         </div>
 
         <!-- Timer comenzando en 25:00 y terminando en 00:00 -->
-        <span id="timer" class="text-8xl text-center text-black">25:00</span>
+        <span id="timer" class="text-8xl text-center text-black z-10">25:00</span>
 
         <!-- Botones para iniciar y parar el timer -->
         <ContentButtonsControl id="pomodoro-buttons-control" />
@@ -27,7 +29,7 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
         <ContentButtonsControl id="l-buttons-control" />
 
         <!-- Texto con la cantidad de pomodoros completados -->
-        <span class="flex items-center justify-center gap-x-2 text-lg text-center text-black">
+        <span class="flex items-center justify-center gap-x-2 text-lg text-center text-black z-10">
             <!-- Icono de tomate para el pomodoro con color rojo-->
             <PomodoroIcon />
             <span id="pomodoros">Pomodoros completados: <span id="pomodoros-count">0</span></span>
@@ -51,9 +53,12 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
     const parar = document.getElementById('parar') as HTMLElement | null;
 
     const pomodorosCount = document.getElementById('pomodoros-count') as HTMLElement | null;
-    const audio = new Audio('/assets/media/ma-meilleure-ennemie.mp3');
 
+    const audio = new Audio('/assets/media/ma-meilleure-ennemie.mp3');
+    const videoBackground = document.getElementsByClassName('video-background')[0] as HTMLElement | null;
+    const video = document.getElementById('video') as HTMLVideoElement | null;
     const timer = document.getElementById('timer') as HTMLElement | null;
+
     let intervalId: number | null = null;
     let pomodoros = 0;
 
@@ -131,8 +136,10 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
                 sButtonsControl.style.display = 'none';
                 lButtonsControl.style.display = 'none';
 
-                if (iniciar && resetear && parar) {
+                if (iniciar && resetear && parar && videoBackground && video) {
                     iniciar.addEventListener('click', () => {
+                        videoBackground.style.display = 'block';
+                        video.play();
                         audio.play();
 
                         if (intervalId !== null) {
@@ -142,6 +149,8 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
                     });
 
                     resetear.addEventListener('click', () => {
+                        video.currentTime = 0;
+                        video.play();
                         audio.currentTime = 0;
                         audio.play();
 
@@ -152,6 +161,7 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
                     });
 
                     parar.addEventListener('click', () => {
+                        video.pause();
                         audio.pause();
 
                         if (intervalId !== null) {
@@ -177,9 +187,13 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
             descansoLargo.classList.remove('active');
             audio.pause();
             audio.currentTime = 0;
+            if (intervalId !== null) {
+                clearInterval(intervalId); // Detenemos el temporizador
+                intervalId = null;
+            }
 
             if (timer && pomodorosCount) {
-                timer.textContent = '05:00';
+                timer.textContent = '05:00'; 
             }
 
             if (pomodoroButtonsControl && sButtonsControl && lButtonsControl) {
@@ -197,6 +211,10 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
             descansoCorto.classList.remove('active');
             audio.pause();
             audio.currentTime = 0;
+            if (intervalId !== null) {
+                clearInterval(intervalId); // Detenemos el temporizador
+                intervalId = null;
+            }
 
             if (timer && pomodorosCount) {
                 timer.textContent = '15:00';
