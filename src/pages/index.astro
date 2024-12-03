@@ -137,7 +137,7 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
                 timer.textContent = formatTime(minutes, seconds);
             }
 
-            if (remainingTime === 0 && pomodorosCount && video && pomodoroButtonsControl) {
+            if (remainingTime === 0 && pomodorosCount && video && pomodoroButtonsControl && videoBackground) {
                 if (intervalId !== null) {
                     clearInterval(intervalId);
                     intervalId = null; // Reiniciamos el intervalo
@@ -146,12 +146,14 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
                     timer.textContent = valueInit; // Reiniciamos el temporizador
                 }
                 if (pomodoroButtonsControl.style.display === 'flex' && timer){
+                    // timer.textContent = '00:12';
                     timer.textContent = '25:00';
                 }
                 pomodoros++; // Sumamos un pomodoro
                 console.log(`¡Pomodoro completado! Total: ${pomodoros}`);
                 pomodorosCount.textContent = String(pomodoros);
                 // Puedes reproducir un sonido o hacer algo adicional aquí
+                videoBackground.style.display = 'none';
                 audio.pause();
                 audio.currentTime = 0;
                 video.pause();
@@ -172,6 +174,7 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
 
             if (timer && pomodorosCount) {
                 timer.textContent = '25:00';
+                // timer.textContent = '00:12';
             }
 
             // Mostrar los botones de control
@@ -189,6 +192,7 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
                         if (intervalId !== null) {
                             clearInterval(intervalId);
                         }
+                        // const timeString = timer?.textContent || '00:12';
                         const timeString = timer?.textContent || '25:00';
 
                         const [minutes, seconds] = timeString.split(":").map(Number);
@@ -198,6 +202,7 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
                     });
 
                     resetear.addEventListener('click', () => {
+                        videoBackground.style.display = 'block';
                         video.currentTime = 0;
                         video.play();
                         audio.currentTime = 0;
@@ -207,6 +212,7 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
                             clearInterval(intervalId);
                         }
                         startTimer(25 * 60);
+                        // startTimer(0.2 * 60);
                     });
 
                     parar.addEventListener('click', () => {
