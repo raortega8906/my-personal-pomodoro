@@ -62,8 +62,8 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
 
     const audio = new Audio('/assets/media/ma-meilleure-ennemie.mp3');
     const audioPomodoro = new Audio('/assets/media/final-pomodoro.mp3');
-    const audioDescansoCorto = new Audio('/assets/media/descanso-corto.mp3');
-    const audioDescansoLargo = new Audio('/assets/media/descanso-largo.mp3');
+    // const audioDescansoCorto = new Audio('/assets/media/descanso-corto.mp3');
+    // const audioDescansoLargo = new Audio('/assets/media/descanso-largo.mp3');
 
     const videoBackground = document.getElementsByClassName('video-background')[0] as HTMLElement | null;
     const video = document.getElementById('video') as HTMLVideoElement | null;
@@ -235,52 +235,52 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
         }
     }
 
-    function startTimerDescansoCorto(): void {
-        if (pomodoro && descansoCorto && descansoLargo) {
-            descansoCorto.classList.add('active');
-            pomodoro.classList.remove('active');
-            descansoLargo.classList.remove('active');
-            audio.pause();
-            audio.currentTime = 0;
-            if (intervalId !== null) {
-                clearInterval(intervalId); 
-                intervalId = null;
-            }
+    // function startTimerDescansoCorto(): void {
+    //     if (pomodoro && descansoCorto && descansoLargo) {
+    //         descansoCorto.classList.add('active');
+    //         pomodoro.classList.remove('active');
+    //         descansoLargo.classList.remove('active');
+    //         audio.pause();
+    //         audio.currentTime = 0;
+    //         if (intervalId !== null) {
+    //             clearInterval(intervalId); 
+    //             intervalId = null;
+    //         }
 
-            if (timer && pomodorosCount) {
-                timer.textContent = '05:00'; 
-            }
+    //         if (timer && pomodorosCount) {
+    //             timer.textContent = '05:00'; 
+    //         }
 
-            if (pomodoroButtonsControl && sButtonsControl && lButtonsControl) {
-                pomodoroButtonsControl.style.display = 'none';
-                sButtonsControl.style.display = 'flex';
-                lButtonsControl.style.display = 'none';
-            }
-        }
-    }
+    //         if (pomodoroButtonsControl && sButtonsControl && lButtonsControl) {
+    //             pomodoroButtonsControl.style.display = 'none';
+    //             sButtonsControl.style.display = 'flex';
+    //             lButtonsControl.style.display = 'none';
+    //         }
+    //     }
+    // }
 
-    function startTimerDescansoLargo(): void {
-        if (pomodoro && descansoCorto && descansoLargo) {
-            descansoLargo.classList.add('active');
-            pomodoro.classList.remove('active');
-            descansoCorto.classList.remove('active');
-            audio.pause();
-            audio.currentTime = 0;
-            if (intervalId !== null) {
-                clearInterval(intervalId); 
-                intervalId = null;
-            }
+    // function startTimerDescansoLargo(): void {
+    //     if (pomodoro && descansoCorto && descansoLargo) {
+    //         descansoLargo.classList.add('active');
+    //         pomodoro.classList.remove('active');
+    //         descansoCorto.classList.remove('active');
+    //         audio.pause();
+    //         audio.currentTime = 0;
+    //         if (intervalId !== null) {
+    //             clearInterval(intervalId); 
+    //             intervalId = null;
+    //         }
 
-            if (timer && pomodorosCount) {
-                timer.textContent = '15:00';
-            }
+    //         if (timer && pomodorosCount) {
+    //             timer.textContent = '15:00';
+    //         }
 
-            if (pomodoroButtonsControl && sButtonsControl && lButtonsControl) {
-                pomodoroButtonsControl.style.display = 'none';
-                sButtonsControl.style.display = 'none';
-                lButtonsControl.style.display = 'flex';
-            }
-        }
-    }
+    //         if (pomodoroButtonsControl && sButtonsControl && lButtonsControl) {
+    //             pomodoroButtonsControl.style.display = 'none';
+    //             sButtonsControl.style.display = 'none';
+    //             lButtonsControl.style.display = 'flex';
+    //         }
+    //     }
+    // }
 
 </script>
