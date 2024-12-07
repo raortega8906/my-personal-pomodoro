@@ -102,10 +102,10 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
         });
 
         descansoCorto.addEventListener('click', () => {
-            // alert('Descanso corto no disponible');
+            alert('Descanso corto no disponible');
             // Activar funcionalidad cuando se programe este modulo
-            videoBackground.style.display = 'none';
-            startTimerDescansoCorto();
+            // videoBackground.style.display = 'none';
+            // startTimerDescansoCorto();
         });
 
 
@@ -234,79 +234,79 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
         }
     }
 
-    function startTimerDescansoCorto(): void {
-        if (pomodoro && descansoCorto && descansoLargo) {
-            descansoCorto.classList.add('active');
-            pomodoro.classList.remove('active');
-            descansoLargo.classList.remove('active');
-            audio.pause();
-            audio.currentTime = 0;
-            if (intervalId !== null) {
-                clearInterval(intervalId); 
-                intervalId = null;
-            }
+    // function startTimerDescansoCorto(): void {
+    //     if (pomodoro && descansoCorto && descansoLargo) {
+    //         descansoCorto.classList.add('active');
+    //         pomodoro.classList.remove('active');
+    //         descansoLargo.classList.remove('active');
+    //         audio.pause();
+    //         audio.currentTime = 0;
+    //         if (intervalId !== null) {
+    //             clearInterval(intervalId); 
+    //             intervalId = null;
+    //         }
 
-            if (timer && pomodorosCount) {
-                timer.textContent = '05:00'; 
-            }
+    //         if (timer && pomodorosCount) {
+    //             timer.textContent = '05:00'; 
+    //         }
 
-            if (pomodoroButtonsControl && sButtonsControl && lButtonsControl) {
-                pomodoroButtonsControl.style.display = 'none';
-                sButtonsControl.style.display = 'flex';
-                lButtonsControl.style.display = 'none';
+    //         if (pomodoroButtonsControl && sButtonsControl && lButtonsControl) {
+    //             pomodoroButtonsControl.style.display = 'none';
+    //             sButtonsControl.style.display = 'flex';
+    //             lButtonsControl.style.display = 'none';
 
-                if (iniciar && resetear && parar && videoBackground && video && timer) {
-                    iniciar.addEventListener('click', () => {
-                        videoBackground.style.display = 'block';
-                        video.play();
-                        audio.play();
+    //             if (iniciar && resetear && parar && videoBackground && video && timer) {
+    //                 iniciar.addEventListener('click', () => {
+    //                     videoBackground.style.display = 'block';
+    //                     video.play();
+    //                     audio.play();
 
-                        if (intervalId !== null) {
-                            clearInterval(intervalId);
-                        }
-                        // const timeString = timer?.textContent || '00:12';
-                        const timeString = timer?.textContent || '25:00';
+    //                     if (intervalId !== null) {
+    //                         clearInterval(intervalId);
+    //                     }
+    //                     // const timeString = timer?.textContent || '00:12';
+    //                     const timeString = timer?.textContent || '25:00';
 
-                        const [minutes, seconds] = timeString.split(":").map(Number);
-                        console.log(minutes, seconds);
-                        // startTimer(0.1 * 60);
-                        startTimer(minutes * 60 + seconds);
-                    });
+    //                     const [minutes, seconds] = timeString.split(":").map(Number);
+    //                     console.log(minutes, seconds);
+    //                     // startTimer(0.1 * 60);
+    //                     startTimer(minutes * 60 + seconds);
+    //                 });
 
-                    resetear.addEventListener('click', () => {
-                        videoBackground.style.display = 'block';
-                        video.currentTime = 0;
-                        video.play();
-                        audio.currentTime = 0;
-                        audio.play();
+    //                 resetear.addEventListener('click', () => {
+    //                     videoBackground.style.display = 'block';
+    //                     video.currentTime = 0;
+    //                     video.play();
+    //                     audio.currentTime = 0;
+    //                     audio.play();
 
-                        if (intervalId !== null) {
-                            clearInterval(intervalId);
-                        }
-                        startTimer(25 * 60);
-                        // startTimer(0.2 * 60);
-                    });
+    //                     if (intervalId !== null) {
+    //                         clearInterval(intervalId);
+    //                     }
+    //                     startTimer(25 * 60);
+    //                     // startTimer(0.2 * 60);
+    //                 });
 
-                    parar.addEventListener('click', () => {
-                        video.pause();
-                        audio.pause();
-                        timer.textContent = timer.textContent;
+    //                 parar.addEventListener('click', () => {
+    //                     video.pause();
+    //                     audio.pause();
+    //                     timer.textContent = timer.textContent;
 
-                        if (intervalId !== null) {
-                            clearInterval(intervalId);
-                            intervalId = null;
-                        }
-                    });
+    //                     if (intervalId !== null) {
+    //                         clearInterval(intervalId);
+    //                         intervalId = null;
+    //                     }
+    //                 });
 
-                    audio.addEventListener('ended', () => {
-                        audio.currentTime = 0;
-                        audio.play();
-                    });
-                }
+    //                 audio.addEventListener('ended', () => {
+    //                     audio.currentTime = 0;
+    //                     audio.play();
+    //                 });
+    //             }
 
-            }
-        }
-    }
+    //         }
+    //     }
+    // }
 
     // function startTimerDescansoLargo(): void {
     //     if (pomodoro && descansoCorto && descansoLargo) {
