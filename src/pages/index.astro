@@ -236,7 +236,7 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
 
     // function startTimerDescansoCorto(): void {
     //     if (pomodoro && descansoCorto && descansoLargo) {
-    //         descansoCorto.classList.add('active');
+    //         descansoCorto.classList.add('active');   
     //         pomodoro.classList.remove('active');
     //         descansoLargo.classList.remove('active');
     //         audio.pause();
@@ -247,66 +247,16 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
     //         }
 
     //         if (timer && pomodorosCount) {
-    //             timer.textContent = '05:00'; 
+    //             timer.textContent = '15:00';
     //         }
 
     //         if (pomodoroButtonsControl && sButtonsControl && lButtonsControl) {
     //             pomodoroButtonsControl.style.display = 'none';
     //             sButtonsControl.style.display = 'flex';
     //             lButtonsControl.style.display = 'none';
-
-    //             if (iniciar && resetear && parar && videoBackground && video && timer) {
-    //                 iniciar.addEventListener('click', () => {
-    //                     videoBackground.style.display = 'block';
-    //                     video.play();
-    //                     audio.play();
-
-    //                     if (intervalId !== null) {
-    //                         clearInterval(intervalId);
-    //                     }
-    //                     // const timeString = timer?.textContent || '00:12';
-    //                     const timeString = timer?.textContent || '25:00';
-
-    //                     const [minutes, seconds] = timeString.split(":").map(Number);
-    //                     console.log(minutes, seconds);
-    //                     // startTimer(0.1 * 60);
-    //                     startTimer(minutes * 60 + seconds);
-    //                 });
-
-    //                 resetear.addEventListener('click', () => {
-    //                     videoBackground.style.display = 'block';
-    //                     video.currentTime = 0;
-    //                     video.play();
-    //                     audio.currentTime = 0;
-    //                     audio.play();
-
-    //                     if (intervalId !== null) {
-    //                         clearInterval(intervalId);
-    //                     }
-    //                     startTimer(25 * 60);
-    //                     // startTimer(0.2 * 60);
-    //                 });
-
-    //                 parar.addEventListener('click', () => {
-    //                     video.pause();
-    //                     audio.pause();
-    //                     timer.textContent = timer.textContent;
-
-    //                     if (intervalId !== null) {
-    //                         clearInterval(intervalId);
-    //                         intervalId = null;
-    //                     }
-    //                 });
-
-    //                 audio.addEventListener('ended', () => {
-    //                     audio.currentTime = 0;
-    //                     audio.play();
-    //                 });
-    //             }
-
     //         }
     //     }
-    // }
+    // 
 
     // function startTimerDescansoLargo(): void {
     //     if (pomodoro && descansoCorto && descansoLargo) {
