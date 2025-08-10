@@ -45,240 +45,287 @@ import ContentButtonsControl from '../components/ContentButtonsControl.astro';
 
 <script>
 
-    // Recogida de los elementos
-    const pomodoro = document.getElementById('pomodoro') as HTMLElement | null;
-    const descansoCorto = document.getElementById('descanso-corto') as HTMLElement | null;
-    const descansoLargo = document.getElementById('descanso-largo') as HTMLElement | null;
+// Recogida de los elementos
+const pomodoro = document.getElementById('pomodoro') as HTMLElement | null;
+const descansoCorto = document.getElementById('descanso-corto') as HTMLElement | null;
+const descansoLargo = document.getElementById('descanso-largo') as HTMLElement | null;
 
-    const pomodoroButtonsControl = document.getElementById('pomodoro-buttons-control') as HTMLElement | null;
-    const sButtonsControl = document.getElementById('s-buttons-control') as HTMLElement | null;
-    const lButtonsControl = document.getElementById('l-buttons-control') as HTMLElement | null;
+const pomodoroButtonsControl = document.getElementById('pomodoro-buttons-control') as HTMLElement | null;
+const sButtonsControl = document.getElementById('s-buttons-control') as HTMLElement | null;
+const lButtonsControl = document.getElementById('l-buttons-control') as HTMLElement | null;
 
-    const iniciar = document.getElementById('iniciar') as HTMLElement | null;
-    const resetear = document.getElementById('resetear') as HTMLElement | null;
-    const parar = document.getElementById('parar') as HTMLElement | null;
+const pomodorosCount = document.getElementById('pomodoros-count') as HTMLElement | null;
 
-    const pomodorosCount = document.getElementById('pomodoros-count') as HTMLElement | null;
+const audio = new Audio('/assets/media/ma-meilleure-ennemie.mp3');
+const audioPomodoro = new Audio('/assets/media/final-pomodoro.mp3');
 
-    const audio = new Audio('/assets/media/ma-meilleure-ennemie.mp3');
-    const audioPomodoro = new Audio('/assets/media/final-pomodoro.mp3');
-    // const audioDescansoCorto = new Audio('/assets/media/descanso-corto.mp3');
-    // const audioDescansoLargo = new Audio('/assets/media/descanso-largo.mp3');
+const videoBackground = document.getElementsByClassName('video-background')[0] as HTMLElement | null;
+const video = document.getElementById('video') as HTMLVideoElement | null;
+const timer = document.getElementById('timer') as HTMLElement | null;
 
-    const videoBackground = document.getElementsByClassName('video-background')[0] as HTMLElement | null;
-    const video = document.getElementById('video') as HTMLVideoElement | null;
-    const timer = document.getElementById('timer') as HTMLElement | null;
+let intervalId: number | null = null;
+let pomodoros = 0;
+let currentMode = 'pomodoro';
 
-    let intervalId: number | null = null;
-    let pomodoros = 0;
+const audionOn = document.getElementById('audio-on') as HTMLElement | null;
+const audionOff = document.getElementById('audio-off') as HTMLElement | null;
 
-    const audionOn = document.getElementById('audio-on') as HTMLElement | null;
-    const audionOff = document.getElementById('audio-off') as HTMLElement | null;
+// Manejar audio on/off
+if (audionOn && audionOff) {
+    audionOn.addEventListener('click', () => {
+        audio.volume = 1;
+        audionOn.style.display = 'none';
+        audionOff.style.display = 'flex';
+    });
 
-    if (audionOn && audionOff) {
-        audionOn.addEventListener('click', () => {
-            audio.volume = 1;
-            audionOn.style.display = 'none';
-            audionOff.style.display = 'flex';
+    audionOff.addEventListener('click', () => {
+        audio.volume = 0;
+        audionOff.style.display = 'none';
+        audionOn.style.display = 'flex';
+    });
+}
+
+// Función para limpiar todo al cambiar de pestaña
+function resetAll(): void {
+    if (intervalId !== null) {
+        clearInterval(intervalId);
+        intervalId = null;
+    }
+    
+    audio.pause();
+    audio.currentTime = 0;
+    if (video) {
+        video.pause();
+        video.currentTime = 0;
+    }
+    if (videoBackground) {
+        videoBackground.style.display = 'none';
+    }
+}
+
+// Función para eliminar todos los event listeners de botones clonándolos
+function cleanButtonListeners(container: HTMLElement): void {
+    const iniciar = container.querySelector('button:nth-child(1)') as HTMLElement;
+    const resetear = container.querySelector('button:nth-child(2)') as HTMLElement;
+    const parar = container.querySelector('button:nth-child(3)') as HTMLElement;
+    
+    if (iniciar) iniciar.replaceWith(iniciar.cloneNode(true));
+    if (resetear) resetear.replaceWith(resetear.cloneNode(true));
+    if (parar) parar.replaceWith(parar.cloneNode(true));
+}
+
+// Función para configurar event listeners de botones
+function setupControlButtons(container: HTMLElement, defaultTime: string, durationMinutes: number): void {
+    if (!container || !timer) return;
+    
+    // Limpiar listeners anteriores
+    cleanButtonListeners(container);
+    
+    // Obtener botones después de la limpieza
+    const iniciar = container.querySelector('button:nth-child(1)') as HTMLElement;
+    const resetear = container.querySelector('button:nth-child(2)') as HTMLElement;
+    const parar = container.querySelector('button:nth-child(3)') as HTMLElement;
+    
+    if (iniciar && resetear && parar) {
+        // Botón Iniciar
+        iniciar.addEventListener('click', () => {
+            // if (currentMode === 'pomodoro' && videoBackground && video) {
+            if (videoBackground && video) {
+                videoBackground.style.display = 'block';
+                video.play();
+                audio.play();
+            }
+            
+            if (intervalId !== null) {
+                clearInterval(intervalId);
+            }
+            const timeString = timer?.textContent || defaultTime;
+            const [minutes, seconds] = timeString.split(":").map(Number);
+            startTimer(minutes * 60 + seconds);
         });
 
-        audionOff.addEventListener('click', () => {
-            audio.volume = 0;
-            audionOff.style.display = 'none';
-            audionOn.style.display = 'flex';
+        // Botón Resetear
+        resetear.addEventListener('click', () => {
+            // if (currentMode === 'pomodoro' && videoBackground && video) {
+            if (videoBackground && video) {
+                videoBackground.style.display = 'block';
+                video.currentTime = 0;
+                video.play();
+                audio.currentTime = 0;
+                audio.play();
+            }
+            
+            if (intervalId !== null) {
+                clearInterval(intervalId);
+            }
+            if (timer) {
+                timer.textContent = defaultTime;
+            }
+            startTimer(durationMinutes * 60);
+        });
+
+        // Botón Parar
+        parar.addEventListener('click', () => {
+            if (video) video.pause();
+            audio.pause();
+            
+            if (intervalId !== null) {
+                clearInterval(intervalId);
+                intervalId = null;
+            }
         });
     }
+}
 
-    // Eventos
-    if (pomodoro && descansoCorto && descansoLargo && videoBackground) {
+// Eventos principales
+if (pomodoro && descansoCorto && descansoLargo) {
+    pomodoro.classList.add('active');
+    descansoCorto.classList.remove('active');
+    descansoLargo.classList.remove('active');
+
+    startTimerPomodoro();
+
+    pomodoro.addEventListener('click', () => {
+        resetAll();
+        startTimerPomodoro();
+    });
+
+    descansoCorto.addEventListener('click', () => {
+        resetAll();
+        startTimerDescansoCorto();
+    });
+
+    descansoLargo.addEventListener('click', () => {
+        resetAll();
+        startTimerDescansoLargo();
+    });
+}
+
+// Función para convertir minutos y segundos a un formato mm:ss
+function formatTime(minutes: number, seconds: number): string {
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+
+// Función para iniciar el temporizador
+function startTimer(duration: number): void {
+    let remainingTime = duration;
+    const valueInit = timer?.textContent || null;
+
+    intervalId = window.setInterval(() => {
+        const minutes = Math.floor(remainingTime / 60);
+        const seconds = remainingTime % 60;
+
+        if (timer) {
+            timer.textContent = formatTime(minutes, seconds);
+        }
+
+        if (remainingTime === 0) {
+            if (intervalId !== null) {
+                clearInterval(intervalId);
+                intervalId = null;
+            }
+            
+            // Solo contar pomodoros si estamos en modo pomodoro
+            if (currentMode === 'pomodoro' && pomodorosCount) {
+                pomodoros++;
+                console.log(`¡Pomodoro completado! Total: ${pomodoros}`);
+                pomodorosCount.textContent = String(pomodoros);
+                audioPomodoro.play();
+            }
+            
+            // Resetear timer al valor inicial
+            if (timer) {
+                if (currentMode === 'pomodoro') timer.textContent = '25:00';
+                else if (currentMode === 'descanso-corto') timer.textContent = '05:00';
+                else if (currentMode === 'descanso-largo') timer.textContent = '15:00';
+            }
+            
+            // Parar video y audio
+            if (videoBackground) videoBackground.style.display = 'none';
+            audio.pause();
+            audio.currentTime = 0;
+            if (video) {
+                video.pause();
+                video.currentTime = 0;
+            }
+        } else {
+            remainingTime--;
+        }
+    }, 1000);
+}
+
+function startTimerPomodoro(): void {
+    if (pomodoro && descansoCorto && descansoLargo) {
+        currentMode = 'pomodoro';
+        
         pomodoro.classList.add('active');
         descansoCorto.classList.remove('active');
         descansoLargo.classList.remove('active');
 
-        startTimerPomodoro();
+        if (timer) {
+            timer.textContent = '25:00';
+        }
 
-        pomodoro.addEventListener('click', () => {
-            startTimerPomodoro();
-        });
+        if (pomodoroButtonsControl && sButtonsControl && lButtonsControl) {
+            pomodoroButtonsControl.style.display = 'flex';
+            sButtonsControl.style.display = 'none';
+            lButtonsControl.style.display = 'none';
 
-        descansoCorto.addEventListener('click', () => {
-            alert('Descanso corto no disponible');
-            // Activar funcionalidad cuando se programe este modulo
-            // videoBackground.style.display = 'none';
-            // startTimerDescansoCorto();
-        });
-
-
-        descansoLargo.addEventListener('click', () => {
-            alert('Descanso largo no disponible');
-            // Activar funcionalidad cuando se programe este modulo
-            // videoBackground.style.display = 'none';
-            // startTimerDescansoLargo();
-        });
-    }
-
-    // Función para convertir minutos y segundos a un formato mm:ss
-    function formatTime(minutes: number, seconds: number): string {
-        return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-    }
-
-    // Función para iniciar el temporizador
-    function startTimer(duration: number): void {
-        let remainingTime = duration; // Tiempo en segundos (25 minutos = 1500 segundos)
-        const valueInit = timer?.textContent || null; // Obtenemos el valor inicial del temporizador
-
-        intervalId = window.setInterval(() => {
-            // Calculamos minutos y segundos restantes
-            const minutes = Math.floor(remainingTime / 60);
-            const seconds = remainingTime % 60;
-
-            // Actualizamos el texto del temporizador
-            if (timer) {
-                timer.textContent = formatTime(minutes, seconds);
-            }
-
-            if (remainingTime === 0 && pomodorosCount && video && pomodoroButtonsControl && videoBackground) {
-                if (intervalId !== null) {
-                    clearInterval(intervalId);
-                    intervalId = null; // Reiniciamos el intervalo
-                }
-                if (timer) {
-                    timer.textContent = valueInit; // Reiniciamos el temporizador
-                }
-                if (pomodoroButtonsControl.style.display === 'flex' && timer){
-                    // timer.textContent = '00:12';
-                    timer.textContent = '25:00';
-                }
-                pomodoros++; // Sumamos un pomodoro
-                console.log(`¡Pomodoro completado! Total: ${pomodoros}`);
-                pomodorosCount.textContent = String(pomodoros);
-                // Puedes reproducir un sonido o hacer algo adicional aquí
-                videoBackground.style.display = 'none';
-                audio.pause();
-                audio.currentTime = 0;
-                video.pause();
-                video.currentTime = 0;
-                audioPomodoro.play();
-                
-            } else {
-                remainingTime--; // Reducimos el tiempo restante
-            }
-        }, 1000); // Se ejecuta cada segundo
-    }
-
-    function startTimerPomodoro(): void {
-        if (pomodoro && descansoCorto && descansoLargo) {
-            pomodoro.classList.add('active');
-            descansoCorto.classList.remove('active');
-            descansoLargo.classList.remove('active');
-
-            if (timer && pomodorosCount) {
-                timer.textContent = '25:00';
-                // timer.textContent = '00:12';
-            }
-
-            // Mostrar los botones de control
-            if (pomodoroButtonsControl && sButtonsControl && lButtonsControl) {
-                pomodoroButtonsControl.style.display = 'flex';
-                sButtonsControl.style.display = 'none';
-                lButtonsControl.style.display = 'none';
-
-                if (iniciar && resetear && parar && videoBackground && video && timer) {
-                    iniciar.addEventListener('click', () => {
-                        videoBackground.style.display = 'block';
-                        video.play();
-                        audio.play();
-
-                        if (intervalId !== null) {
-                            clearInterval(intervalId);
-                        }
-                        // const timeString = timer?.textContent || '00:12';
-                        const timeString = timer?.textContent || '25:00';
-
-                        const [minutes, seconds] = timeString.split(":").map(Number);
-                        // startTimer(0.1 * 60);
-                        startTimer(minutes * 60 + seconds);
-                    });
-
-                    resetear.addEventListener('click', () => {
-                        videoBackground.style.display = 'block';
-                        video.currentTime = 0;
-                        video.play();
-                        audio.currentTime = 0;
-                        audio.play();
-
-                        if (intervalId !== null) {
-                            clearInterval(intervalId);
-                        }
-                        startTimer(25 * 60);
-                        // startTimer(0.2 * 60);
-                    });
-
-                    parar.addEventListener('click', () => {
-                        video.pause();
-                        audio.pause();
-                        timer.textContent = timer.textContent;
-
-                        if (intervalId !== null) {
-                            clearInterval(intervalId);
-                            intervalId = null;
-                        }
-                    });
-
-                    audio.addEventListener('ended', () => {
-                        audio.currentTime = 0;
-                        audio.play();
-                    });
-                }
-            }
+            setupControlButtons(pomodoroButtonsControl, '25:00', 25);
         }
     }
+}
 
-    // function startTimerDescansoCorto(): void {
-    //     if (pomodoro && descansoCorto && descansoLargo) {
-    //         descansoCorto.classList.add('active');   
-    //         pomodoro.classList.remove('active');
-    //         descansoLargo.classList.remove('active');
-    //         audio.pause();
-    //         audio.currentTime = 0;
-    //         if (intervalId !== null) {
-    //             clearInterval(intervalId); 
-    //             intervalId = null;
-    //         }
+function startTimerDescansoCorto(): void {
+    if (pomodoro && descansoCorto && descansoLargo) {
+        currentMode = 'descanso-corto';
+        
+        descansoCorto.classList.add('active');   
+        pomodoro.classList.remove('active');
+        descansoLargo.classList.remove('active');
 
-    //         if (timer && pomodorosCount) {
-    //             timer.textContent = '15:00';
-    //         }
+        if (timer) {
+            timer.textContent = '05:00';
+        }
 
-    //         if (pomodoroButtonsControl && sButtonsControl && lButtonsControl) {
-    //             pomodoroButtonsControl.style.display = 'none';
-    //             sButtonsControl.style.display = 'flex';
-    //             lButtonsControl.style.display = 'none';
-    //         }
-    //     }
+        if (pomodoroButtonsControl && sButtonsControl && lButtonsControl) {
+            pomodoroButtonsControl.style.display = 'none';
+            sButtonsControl.style.display = 'flex';
+            lButtonsControl.style.display = 'none';
 
-    // function startTimerDescansoLargo(): void {
-    //     if (pomodoro && descansoCorto && descansoLargo) {
-    //         descansoLargo.classList.add('active');
-    //         pomodoro.classList.remove('active');
-    //         descansoCorto.classList.remove('active');
-    //         audio.pause();
-    //         audio.currentTime = 0;
-    //         if (intervalId !== null) {
-    //             clearInterval(intervalId); 
-    //             intervalId = null;
-    //         }
+            setupControlButtons(sButtonsControl, '05:00', 5);
+        }
+    }
+}
 
-    //         if (timer && pomodorosCount) {
-    //             timer.textContent = '15:00';
-    //         }
+function startTimerDescansoLargo(): void {
+    if (pomodoro && descansoCorto && descansoLargo) {
+        currentMode = 'descanso-largo';
+        
+        descansoLargo.classList.add('active');
+        pomodoro.classList.remove('active');
+        descansoCorto.classList.remove('active');
 
-    //         if (pomodoroButtonsControl && sButtonsControl && lButtonsControl) {
-    //             pomodoroButtonsControl.style.display = 'none';
-    //             sButtonsControl.style.display = 'none';
-    //             lButtonsControl.style.display = 'flex';
-    //         }
-    //     }
+        if (timer) {
+            timer.textContent = '15:00';
+        }
+
+        if (pomodoroButtonsControl && sButtonsControl && lButtonsControl) {
+            pomodoroButtonsControl.style.display = 'none';
+            sButtonsControl.style.display = 'none';
+            lButtonsControl.style.display = 'flex';
+
+            setupControlButtons(lButtonsControl, '15:00', 15);
+        }
+    }
+}
+
+// Configurar loop de audio solo para pomodoro
+audio.addEventListener('ended', () => {
+    // if (currentMode === 'pomodoro') {
+        audio.currentTime = 0;
+        audio.play();
     // }
+});
 
 </script>
