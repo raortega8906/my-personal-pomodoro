@@ -58,6 +58,8 @@ const pomodorosCount = document.getElementById('pomodoros-count') as HTMLElement
 
 const audio = new Audio('/assets/media/ma-meilleure-ennemie.mp3');
 const audioPomodoro = new Audio('/assets/media/final-pomodoro.mp3');
+const audioDescansoCorto = new Audio('/assets/media/descanso-corto.mp3');
+const audioDescansoLargo = new Audio('/assets/media/descanso-largo.mp3');
 
 const videoBackground = document.getElementsByClassName('video-background')[0] as HTMLElement | null;
 const video = document.getElementById('video') as HTMLVideoElement | null;
@@ -232,7 +234,15 @@ function startTimer(duration: number): void {
                 pomodorosCount.textContent = String(pomodoros);
                 audioPomodoro.play();
             }
+
+            if (currentMode === 'descanso-corto') {
+                audioDescansoCorto.play();
+            }
             
+            if (currentMode === 'descanso-largo') {
+                audioDescansoLargo.play();
+            }
+
             // Resetear timer al valor inicial
             if (timer) {
                 if (currentMode === 'pomodoro') timer.textContent = '25:00';
